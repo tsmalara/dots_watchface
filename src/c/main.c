@@ -11,7 +11,7 @@ static BitmapLayer *s_background_layer;
 static GBitmap *s_background_bitmap; 
 static GPath *s_minute_arrow, *s_hour_arrow, *s_second_arrow; 
 static TextLayer *s_date_layer, *s_month_layer,*s_weather_layer, *s_temperature_layer, *s_step_layer;
-int cx, cy, xDate, yDate, xStep, yStep, xWeather, yWeather, xBT, yBT;
+int cx, cy, xDate, yDate, xStep, yStep, xMonth, yMonth, xWeather, yWeather;
 GPoint center;
 
 static char s_current_steps_buffer[16];
@@ -28,44 +28,44 @@ static void bg_update_proc(Layer *layer, GContext *ctx) {
   cy = bounds.size.h / 2;
   center = GPoint(cx, cy);
       
-  //Date Background
-  xDate = PBL_IF_ROUND_ELSE(cx - 47, cx - 47);
+  //Month Background
+  xMonth = PBL_IF_ROUND_ELSE(cx - 47, cx - 47);
+  yMonth = PBL_IF_ROUND_ELSE(45, 32);
+  graphics_context_set_fill_color(ctx, GColorRed); 
+  graphics_fill_circle(ctx, GPoint(xMonth, yMonth), 20);
+  
+  //Day Background
+  xDate = PBL_IF_ROUND_ELSE(cx + 47, cx + 47);
   yDate = PBL_IF_ROUND_ELSE(45, 32);
-  graphics_context_set_fill_color(ctx, GColorYellow); 
+  graphics_context_set_fill_color(ctx, GColorIslamicGreen); 
   graphics_fill_circle(ctx, GPoint(xDate, yDate), 20);
   
   //Step Background
   xStep = PBL_IF_ROUND_ELSE(cx + 47, cx + 47);
-  yStep = PBL_IF_ROUND_ELSE(45, 32);
-  graphics_context_set_fill_color(ctx, GColorIslamicGreen); 
+  yStep = PBL_IF_ROUND_ELSE(135, 140);
+  graphics_context_set_fill_color(ctx, GColorFashionMagenta); 
   graphics_fill_circle(ctx, GPoint(xStep, yStep), 20);
   
   //Weather Background
-  xWeather = PBL_IF_ROUND_ELSE(cx + 47, cx + 47);
+  xWeather = PBL_IF_ROUND_ELSE(cx - 47, cx - 47);
   yWeather = PBL_IF_ROUND_ELSE(135, 140);
-  graphics_context_set_fill_color(ctx, GColorFashionMagenta); 
+  graphics_context_set_fill_color(ctx, GColorBlueMoon); 
   graphics_fill_circle(ctx, GPoint(xWeather, yWeather), 20);
   
-  //BT Background
-  xBT = PBL_IF_ROUND_ELSE(cx - 47, cx - 47);
-  yBT = PBL_IF_ROUND_ELSE(135, 140);
-  graphics_context_set_fill_color(ctx, GColorVividCerulean); 
-  graphics_fill_circle(ctx, GPoint(xBT, yBT), 20);
-  
-   //orange dot top center
+  //dot top center
   graphics_context_set_fill_color(ctx, GColorOrange); 
   graphics_fill_circle(ctx, GPoint(cx, PBL_IF_ROUND_ELSE(25,23)), 14);
   
-  //purple dot bottom center
+  //dot bottom center
   graphics_context_set_fill_color(ctx, GColorVividViolet); 
   graphics_fill_circle(ctx, GPoint(cx, PBL_IF_ROUND_ELSE(155, 145)), 14);
    
-  //teal dot left
-  graphics_context_set_fill_color(ctx, GColorCeleste); 
+  //dot left
+  graphics_context_set_fill_color(ctx, GColorCyan); 
   graphics_fill_circle(ctx, GPoint(PBL_IF_ROUND_ELSE(25,15), cy), 14);
   
-  //red dot right
-  graphics_context_set_fill_color(ctx, GColorRed); 
+  //dot right
+  graphics_context_set_fill_color(ctx, GColorYellow); 
   graphics_fill_circle(ctx, GPoint(PBL_IF_ROUND_ELSE(155, 129), cy), 14);
 }
 
@@ -173,11 +173,11 @@ static void hands_update_proc(Layer *layer, GContext *ctx) {
   struct tm *t = localtime(&now); 
   
   static char s_buffer_date[8]; 
-  strftime(s_buffer_date, sizeof("dd/MMM/yy"), "%d", t);
+  strftime(s_buffer_date, sizeof("dd/MMM/yy"), "%e", t);
   text_layer_set_text(s_date_layer, s_buffer_date);
   
-  static char s_buffer_month[8];
-  strftime(s_buffer_month, sizeof("dd/MMM/yy"), "%a", t);
+  static char s_buffer_month[3];
+  strftime(s_buffer_month, sizeof("dd/MMM/yy"), "%a", t); 
   text_layer_set_text(s_month_layer, s_buffer_month);
     
   // Clock Background Circle
@@ -244,17 +244,17 @@ static void window_load(Window *s_main_window) {
   layer_add_child(window_layer, bitmap_layer_get_layer(s_background_layer)); 
   layer_add_child(window_layer, s_hands_layer); 
   
-   // Create date DateLayer
+   // Create MonthLayer
   s_month_layer = text_layer_create(GRect(PBL_IF_ROUND_ELSE(-47, -47), PBL_IF_ROUND_ELSE(30, 17), bounds.size.w, 50));
   text_layer_set_background_color(s_month_layer, GColorClear);
-  text_layer_set_text_color(s_month_layer, GColorBlack);  
+  text_layer_set_text_color(s_month_layer, GColorWhite);  
   text_layer_set_font(s_month_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
   text_layer_set_text_alignment(s_month_layer, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(s_month_layer));
   
   
-  // Create date DateLayer
-  s_date_layer = text_layer_create(GRect(PBL_IF_ROUND_ELSE(47, 47), PBL_IF_ROUND_ELSE(30, 17), bounds.size.w, 50));
+  // Create DateLayer
+  s_date_layer = text_layer_create(GRect(PBL_IF_ROUND_ELSE(45, 46), PBL_IF_ROUND_ELSE(30, 17), bounds.size.w, 50));
   text_layer_set_background_color(s_date_layer, GColorClear);
   text_layer_set_text_color(s_date_layer, GColorWhite);  
   text_layer_set_font(s_date_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
