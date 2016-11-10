@@ -140,15 +140,12 @@ static void display_step_count() {
  
   text_layer_set_text_color(s_step_layer, GColorWhite);
   
-  if(thousands > 0) {
+    if(thousands > 0) {
     snprintf(s_current_steps_buffer, sizeof(s_current_steps_buffer),
       "%dk", thousands);
-  } else if(hundreds > 0){
-    snprintf(s_current_steps_buffer, sizeof(s_current_steps_buffer),
-      "%dh", hundreds);   
   } else {
     snprintf(s_current_steps_buffer, sizeof(s_current_steps_buffer),
-      "%d", hundreds);  
+      "%d", hundreds);   
   }
   
   text_layer_set_text(s_step_layer, s_current_steps_buffer);
@@ -179,33 +176,44 @@ static void hands_update_proc(Layer *layer, GContext *ctx) {
   text_layer_set_text(s_month_layer, s_buffer_month);
     
   // Clock Background Circle
-  graphics_context_set_fill_color(ctx, GColorWhite); 
-  graphics_fill_rect(ctx, GRect(cx - 1, cy - 1, 3, 3), 0, GCornerNone); 
-  graphics_fill_circle(ctx, center, 40);
+  //graphics_context_set_fill_color(ctx, GColorWhite);  
+  //graphics_fill_circle(ctx, center, 40);
+  graphics_context_set_stroke_width(ctx, 6); 
+  graphics_context_set_stroke_color(ctx, GColorDukeBlue); 
+  graphics_draw_circle(ctx, GPoint(cx, cy), 13); 
+  graphics_context_set_stroke_color(ctx, GColorBlueMoon);
+  graphics_draw_circle(ctx, GPoint(cx, cy), 25);  
   graphics_context_set_stroke_color(ctx, GColorPictonBlue);
-  graphics_context_set_stroke_width(ctx, 6);
-  graphics_draw_circle(ctx, GPoint(cx, cy), 25);
+  graphics_draw_circle(ctx, GPoint(cx, cy), 38);
   
-  // Hour hand
-  graphics_context_set_fill_color(ctx, GColorBlueMoon); 
-  gpath_rotate_to(s_hour_arrow, (TRIG_MAX_ANGLE * (((t->tm_hour % 12) * 6) + (t->tm_min / 10))) / (12 * 6)); 
-  gpath_draw_filled(ctx, s_hour_arrow); 
+  // Set stroke width/color for hands
+  graphics_context_set_stroke_color(ctx, GColorBlack);
+  graphics_context_set_stroke_width(ctx, 1);
   
   // Minute hand
-  graphics_context_set_fill_color(ctx, GColorDarkGray); 
+  graphics_context_set_fill_color(ctx, GColorWhite); 
   gpath_rotate_to(s_minute_arrow, TRIG_MAX_ANGLE * t->tm_min / 60);
   gpath_draw_filled(ctx, s_minute_arrow); 
+  gpath_draw_outline(ctx, s_minute_arrow);
+  
+  // Hour hand
+  graphics_context_set_fill_color(ctx, GColorWhite); 
+  gpath_rotate_to(s_hour_arrow, (TRIG_MAX_ANGLE * (((t->tm_hour % 12) * 6) + (t->tm_min / 10))) / (12 * 6)); 
+  gpath_draw_filled(ctx, s_hour_arrow);
+  gpath_draw_outline(ctx, s_hour_arrow);  
   
   //Second hand
   //graphics_context_set_fill_color(ctx, GColorRed); 
   //gpath_rotate_to(s_second_arrow, (TRIG_MAX_ANGLE * t->tm_sec / 60)); 
   //gpath_draw_filled(ctx, s_second_arrow);  
   
-  // Center dot
-  graphics_context_set_fill_color(ctx, GColorWhite); 
-  graphics_fill_circle(ctx, center, 3);
-  graphics_context_set_stroke_color(ctx, GColorBlack); 
-  graphics_draw_circle(ctx, center, 3);
+  // Center dot  
+  graphics_context_set_fill_color(ctx, GColorRed); 
+  graphics_fill_circle(ctx, center, 5);
+  graphics_context_set_stroke_color(ctx, GColorBlack);
+  graphics_context_set_stroke_width(ctx, 1);
+  graphics_draw_circle(ctx, GPoint(cx, cy), 5);
+  
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
