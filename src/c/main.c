@@ -167,8 +167,6 @@ static void health_handler(HealthEventType event, void *context) {
 // Health Data End
 
 static void hands_update_proc(Layer *layer, GContext *ctx) {
-  
-  
   time_t now = time(NULL); 
   struct tm *t = localtime(&now); 
   
@@ -184,6 +182,9 @@ static void hands_update_proc(Layer *layer, GContext *ctx) {
   graphics_context_set_fill_color(ctx, GColorWhite); 
   graphics_fill_rect(ctx, GRect(cx - 1, cy - 1, 3, 3), 0, GCornerNone); 
   graphics_fill_circle(ctx, center, 40);
+  graphics_context_set_stroke_color(ctx, GColorPictonBlue);
+  graphics_context_set_stroke_width(ctx, 6);
+  graphics_draw_circle(ctx, GPoint(cx, cy), 25);
   
   // Hour hand
   graphics_context_set_fill_color(ctx, GColorBlueMoon); 
