@@ -1,6 +1,8 @@
 {
     "author": "Smalara",
-    "dependencies": {},
+    "dependencies": {
+        "pebble-clay": "^1.0.3"
+    },
     "keywords": [],
     "name": "dots",
     "pebble": {
@@ -10,10 +12,13 @@
         ],
         "displayName": "Dots",
         "enableMultiJS": true,
-        "messageKeys": {
-            "KEY_CONDITIONS": 1,
-            "KEY_TEMPERATURE": 0
-        },
+        "messageKeys": [
+            "TEMPERATURE",
+            "CONDITIONS",
+            "BackgroundColor",
+            "ForegroundColor",
+            "FarenheitOrCelsius"
+        ],
         "projectType": "native",
         "resources": {
             "media": []
